@@ -1,13 +1,17 @@
 mqtt:
   client:
-    protocol: 4      # MQTTv311
+    protocol: 4 # MQTTv311
   connection:
     host: localhost
     port: 1883
     keepalive: 60
+  account:
+    username: user
+    password: passwd
   private_path: device/001
-#serializer: json:dumps
-#deserializer: json:loads
+serializer: json:dumps
+deserializer: json:loads
+
 bridge:
   # ping pong
   - factory: mqtt_bridge.bridge:RosToMqttBridge
@@ -18,6 +22,7 @@ bridge:
     msg_type: std_msgs.msg:Bool
     topic_from: ping
     topic_to: /pong
+
   # echo back
   - factory: mqtt_bridge.bridge:RosToMqttBridge
     msg_type: std_msgs.msg:String
@@ -27,6 +32,7 @@ bridge:
     msg_type: std_msgs.msg:String
     topic_from: echo
     topic_to: /back
+
   # private path
   - factory: mqtt_bridge.bridge:RosToMqttBridge
     msg_type: std_msgs.msg:String
