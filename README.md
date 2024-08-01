@@ -10,7 +10,7 @@ The `mqtt_bridge` package provides a functionality to bridge between ROS and MQT
 
 This limitation can be overcome by defining custom bridge class, though.
 
-## 2 2Demo
+## 2 Demo
 ### 2.1 Prerequisites
 ```sh
 sudo apt install python3-pip
@@ -88,7 +88,7 @@ bridge:
 > [!TIP]
 > You can use any message type, like `sensor_msgs.msg:Imu`, for example.
 
-The launch file is basically:
+The launch file is basically as follows:
 ``` xml
 <launch>
   <arg name="use_tls" default="false" />
