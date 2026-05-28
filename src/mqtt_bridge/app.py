@@ -48,14 +48,22 @@ def mqtt_bridge_node():
     inject.configure(config)
 
     # configure and connect to MQTT broker
-    mqtt_client.on_connect = _on_connect
-    mqtt_client.on_disconnect = _on_disconnect
-    mqtt_client.connect(**conn_params)
+    # mqtt_client.on_connect = _on_connect
+    # mqtt_client.on_disconnect = _on_disconnect
+    # mqtt_client.connect(**conn_params)
 
     # configure bridges
     bridges = []
     for bridge_args in bridge_params:
         bridges.append(create_bridge(**bridge_args))
+
+    mqtt_client.user_data_set(bridges)
+
+    # Register callbacks
+    mqtt_client.on_connect = _on_connect
+    mqtt_client.on_disconnect = _on_disconnect
+
+    mqtt_client.connect(**conn_params)
 
     # start MQTT loop
     mqtt_client.loop_start()
@@ -68,6 +76,10 @@ def mqtt_bridge_node():
 
 def _on_connect(client, userdata, flags, response_code):
     rospy.loginfo('MQTT connected')
+    bridges = userdata or []
+    for bridge in bridges:
+        if hasattr(bridge, "subscribe"):
+            bridge.subscribe()
 
 
 def _on_disconnect(client, userdata, response_code):

@@ -77,8 +77,17 @@ class MqttToRosBridge(Bridge):
         # Adding the correct topic to subscribe to
         self._mqtt_client.subscribe(self._topic_from)
         self._mqtt_client.message_callback_add(self._topic_from, self._callback_mqtt)
+        self.subscribe()
         self._publisher = rospy.Publisher(
             self._topic_to, self._msg_type, queue_size=self._queue_size)
+    
+    def subscribe(self):
+        result, mid = self._mqtt_client.subscribe(self._topic_from)
+        if result != mqtt.MQTT_ERR_SUCCESS:
+            rospy.logwarn("Failed to subscribe to MQTT topic {}: result={}".format(
+                self._topic_from, result))
+        else:
+            rospy.loginfo("Subscribed to MQTT topic {}".format(self._topic_from))
 
     def _callback_mqtt(self, client: mqtt.Client, userdata: Dict, mqtt_msg: mqtt.MQTTMessage):
         """ callback from MQTT """
